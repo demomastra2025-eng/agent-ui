@@ -154,13 +154,15 @@ const Img = ({ src, alt }: ImgProps) => {
   const objectUrl = useMemo(() => {
     if (!src) return null
     if (typeof src === 'string') return src
-    if (src instanceof Blob) return URL.createObjectURL(src)
+    if (typeof src === 'object' && src !== null && src instanceof Blob) {
+      return URL.createObjectURL(src)
+    }
     return null
   }, [src])
 
   useEffect(() => {
     if (!src || typeof src === 'string') return
-    if (!(src instanceof Blob)) return
+    if (!(typeof src === 'object' && src !== null && src instanceof Blob)) return
 
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl)
