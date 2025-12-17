@@ -26,6 +26,12 @@ import type {
 
 import { PARAGRAPH_SIZES } from '../Paragraph/constants'
 
+const isBlob = (value: unknown): value is Blob =>
+  typeof Blob !== 'undefined' &&
+  typeof value === 'object' &&
+  value !== null &&
+  value instanceof Blob
+
 const filterProps = (props: object) => {
   const newProps = { ...props }
 
@@ -154,15 +160,15 @@ const Img = ({ src, alt }: ImgProps) => {
   const objectUrl = useMemo(() => {
     if (!src) return null
     if (typeof src === 'string') return src
-    if (typeof src === 'object' && src !== null && src instanceof Blob) {
-      return URL.createObjectURL(src)
-    }
+    const candidate: unknown = src
+    if (isBlob(candidate)) return URL.createObjectURL(candidate)
     return null
   }, [src])
 
   useEffect(() => {
     if (!src || typeof src === 'string') return
-    if (!(typeof src === 'object' && src !== null && src instanceof Blob)) return
+    const candidate: unknown = src
+    if (!isBlob(candidate)) return
 
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl)
