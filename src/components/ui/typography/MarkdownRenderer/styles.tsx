@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -178,7 +178,23 @@ const Heading6 = ({ className, ...props }: HeadingProps) => (
 const Img = ({ src, alt }: ImgProps) => {
   const [error, setError] = useState(false)
 
-  if (!src) return null
+  const objectUrl = useMemo(() => {
+    if (!src) return null
+    if (typeof src === 'string') return src
+    if (src instanceof Blob) return URL.createObjectURL(src)
+    return null
+  }, [src])
+
+  useEffect(() => {
+    if (!src || typeof src === 'string') return
+    if (!(src instanceof Blob)) return
+
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+    }
+  }, [src, objectUrl])
+
+  if (!objectUrl) return null
 
   return (
     <div className="w-full max-w-xl">
@@ -186,16 +202,16 @@ const Img = ({ src, alt }: ImgProps) => {
         <div className="flex h-40 flex-col items-center justify-center gap-2 rounded-md bg-secondary/50 text-muted">
           <Paragraph className="text-primary">Image unavailable</Paragraph>
           <Link
-            href={src}
+            href={objectUrl}
             target="_blank"
             className="max-w-md truncate underline"
           >
-            {src}
+            {objectUrl}
           </Link>
         </div>
       ) : (
         <Image
-          src={src}
+          src={objectUrl}
           width={1280}
           height={720}
           alt={alt ?? 'Rendered image'}

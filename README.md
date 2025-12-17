@@ -69,7 +69,7 @@ Agent UI connects directly to your AgentOS instance, allowing you to interact wi
 
 ### 1. Configure the Endpoint
 
-By default, Agent UI connects to `http://localhost:7777`. You can easily change this by:
+By default, Agent UI uses `NEXT_PUBLIC_AGENTOS_ENDPOINT` (fallback: `http://localhost:7777`). You can also change it in the UI by:
 
 1. Hovering over the endpoint URL in the left sidebar
 2. Clicking the edit option to modify the connection settings
@@ -80,6 +80,23 @@ By default, Agent UI connects to `http://localhost:7777`. You can easily change 
 - **Production**: Enter your production AgentOS HTTPS URL
 
 > **Warning**: Make sure your AgentOS is actually running on the specified endpoint before attempting to connect.
+
+#### Default endpoint via environment variable
+
+Set the default endpoint in `.env.local` (recommended) or `.env`:
+
+```bash
+NEXT_PUBLIC_AGENTOS_ENDPOINT=http://localhost:8080
+```
+
+## Deploying on Railway
+
+Railway sets the port via the `PORT` environment variable. This project’s `pnpm start` already respects `PORT`.
+
+Set these Railway variables:
+
+- `NEXT_PUBLIC_AGENTOS_ENDPOINT`: Your deployed AgentOS URL (e.g. `https://your-agentos.up.railway.app`)
+- `NEXT_PUBLIC_OS_SECURITY_KEY`: (optional) auth token if your AgentOS uses one
 
 ### 3. Configure Authentication (Optional)
 

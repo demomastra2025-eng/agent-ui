@@ -7,6 +7,7 @@ import {
   TeamDetails,
   type ChatMessage
 } from '@/types/os'
+import { DEFAULT_AGENTOS_ENDPOINT } from '@/lib/defaultAgentOsEndpoint'
 
 interface Store {
   hydrated: boolean
@@ -81,7 +82,7 @@ export const useStore = create<Store>()(
             typeof messages === 'function' ? messages(state.messages) : messages
         })),
       chatInputRef: { current: null },
-      selectedEndpoint: 'http://localhost:7777',
+      selectedEndpoint: DEFAULT_AGENTOS_ENDPOINT,
       setSelectedEndpoint: (selectedEndpoint) =>
         set(() => ({ selectedEndpoint })),
       authToken: '',
